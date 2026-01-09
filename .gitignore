@@ -4,3 +4,11 @@ venv/
 # python cache
 __pycache__/
 *.pyc
+.env
+
+# Vector database (local state)
+vector_store/
+
+# OS junk
+.DS_Store
+Thumbs.db
