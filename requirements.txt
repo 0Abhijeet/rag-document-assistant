@@ -1,0 +1,6 @@
+langchain
+faiss-cpu
+fastapi
+uvicorn
+pypdf
+openai
