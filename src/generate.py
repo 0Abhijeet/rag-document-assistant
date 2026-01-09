@@ -1,5 +1,5 @@
 import ollama
-from retrieve import retrieve_relevant_chunks
+from src.retrieve import retrieve_relevant_chunks
 
 
 def generate_answer(query):
