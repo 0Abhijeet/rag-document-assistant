@@ -1,35 +1,28 @@
 import ollama
 from src.retrieve import retrieve_relevant_chunks
 
+def stream_answer(question):
+    context_docs = retrieve_relevant_chunks(question)
 
-def generate_answer(query):
-    chunks = retrieve_relevant_chunks(query)
-
-    context = "\n\n".join([chunk.page_content for chunk in chunks])
+    # Extract text from Document objects
+    context_text = "\n".join([doc.page_content for doc in context_docs])
 
     prompt = f"""
-You are a helpful assistant. Answer the question using ONLY the context below.
-If the answer is not in the context, say "I don't know."
+You are a helpful assistant. Use the following context to answer the question.
 
 Context:
-{context}
+{context_text}
 
-Question:
-{query}
-
+Question: {question}
 Answer:
 """
 
-    response = ollama.chat(
+    stream = ollama.chat(
         model="llama3.2:3b",
-        messages=[{"role": "user", "content": prompt}]
+        messages=[{"role": "user", "content": prompt}],
+        stream=True
     )
 
-    return response["message"]["content"]
-
-
-if __name__ == "__main__":
-    query = input("Ask a question: ")
-    answer = generate_answer(query)
-    print("\nAnswer:\n")
-    print(answer)
+    for chunk in stream:
+        if "message" in chunk and "content" in chunk["message"]:
+            yield chunk["message"]["content"]
